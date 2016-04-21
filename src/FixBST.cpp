@@ -32,6 +32,81 @@ struct node{
 	struct node *right;
 };
 
-void fix_bst(struct node *root){
+struct node *temp[2] = { (struct node*)malloc(sizeof(struct node)), (struct node*)malloc(sizeof(struct node)) };
 
+void fix_bst1(struct node* root, int *j, int s1, int s2)
+{
+	if (root == NULL)
+		return;
+	else if (root->data == s1 || root->data == s2)
+	{
+		temp[*j] = root;
+		
+		(*j)++;
+		
+		if (*j == 2)
+		{
+			
+			temp[0]->data = temp[0]->data + temp[1]->data;
+			temp[1]->data = temp[0]->data - temp[1]->data;
+			temp[0]->data = temp[0]->data - temp[1]->data;
+		}
+	}
+	
+		fix_bst1(root->left, j, s1, s2);
+		fix_bst1(root->right, j, s1, s2);
+	
+}
+void ino1(struct node *root, int *arr, int *i)
+{
+	if (root != NULL)
+	{
+		ino1(root->left, arr, i);
+		arr[*i] = root->data;
+		(*i)++;
+		ino1(root->right, arr, i);
+	}
+	else
+		return;
+
+}
+
+void fix_bst(struct node *root){
+	if (root == NULL)
+		return;
+	else
+	{
+		int k = 0;
+		int *arr = (int*)malloc(1000);
+		ino1(root, arr, &k);
+		int s1 = 0, s2 = 0, flag = 0, index = 0;
+		for (int i = 0; i < k - 1; i++)
+		{
+			if (arr[i]>arr[i + 1] && flag == 0)
+			{
+				s1 = arr[i];
+				index = i;
+				flag++;
+			}
+			else if (arr[i] > arr[i + 1] && flag == 1)
+			{
+				s2 = arr[i + 1];
+				flag++;
+			}
+		}
+
+		if (flag == 0)
+		{
+			return;
+		}
+		else if (flag == 1)
+		{
+			s2 = arr[index + 1];
+		}
+		int f = 0;
+		fix_bst1(root, &f, s1, s2);
+
+
+
+	}
 }
