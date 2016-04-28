@@ -39,7 +39,63 @@ struct node{
   struct node *right;
 };
 
+int min_2(int a, int b)
+{
+	if (a < b)
+		return a;
+	else
+		return b;
+}
+
+
+int Down_leaf(struct node *root)
+{
+	
+	if (root == NULL)
+		return INT_MAX;
+	if (root->left == NULL && root->right == NULL)
+		return 0;
+
+	
+	return 1 + min_2(Down_leaf(root->left), Down_leaf(root->right));
+}
+
+
+int closest_leaf(struct node *root, int k, struct node *b[],
+	int i)
+{
+	
+	if (root == NULL)
+		return INT_MAX;
+
+	
+	if (root->data== k)
+	{
+		
+		int r = Down_leaf(root);
+
+		
+		for (int j = i - 1; j >= 0; j--)
+			r = min_2(r, i - j + Down_leaf(b[j]));
+		return r;
+	}
+
+	
+	b[i] = root;
+	return min_2(closest_leaf(root->left, k, b, i + 1), closest_leaf(root->right, k, b, i + 1));
+
+}
+
+
+
 int get_closest_leaf_distance(struct node *root, struct node *temp)
 {
-  return -1;
+	if (root == NULL || temp == NULL)
+		return -1;
+	else
+	{
+		struct node *b[1000];
+
+		return closest_leaf(root, temp->data, b, 0);
+	}
 }
